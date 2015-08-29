@@ -1,0 +1,31 @@
+{% extends "profiles/base_profile.html" %}
+{% load active from custom_tt %}
+{% block head_title %}{% endblock %}
+
+{% block title %}
+  <div class="container">
+    <div class="header-box">
+      <h2 class="h-ms text-center">Мои настройки</h2>
+    </div>
+  </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+      <div>
+        <ul class="nav nav-tabs">
+           <li class=""><a href="{% url 'my_profile' %}">Мой профиль</a></li>
+          {% url 'userprofile_update' as profile %}
+          <li class="{% active request.path profile %}"><a href="{{ profile }}">Изменить профиль</a></li>
+          {% url 'account_email' as account %}
+          <li class="{% active request.path account %}"><a href={{ account }}>Изменить e-mail</a></li>
+          {% url 'account_change_password' as password %}
+          <li class="{% active request.path password %}"><a href="{{ password }}">Изменить пароль</a></li>
+        </ul>
+      </div>
+      {% block subcontent %}
+
+      {% endblock subcontent %}
+    </div>
+{% endblock content %}
+
+

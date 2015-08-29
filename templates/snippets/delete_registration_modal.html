@@ -1,0 +1,54 @@
+{% comment %}
+кнопка вызова
+<a class="{% block ask_question_active  %}{% endblock ask_question_active %} btn btn-default btn-question" {% if user.is_authenticated %} href="{% url 'ask_question' %}" {% elif not user.is_authenticated %} data-toggle="modal" data-target="#myModal"{% endif %} role="button" >Добавить вопрос</a>
+{% endcomment %}
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+</div>
+<div class="modal-body">
+
+
+
+
+
+<ul class="nav nav-tabs">
+<li class="active"><a href="#home" data-toggle="tab">Ваши вопросы</a></li>
+
+  <li class=""><a href="#answers" data-toggle="tab">Ответы</a></li>
+</ul>
+     <div class="tab-content">
+  <div class="tab-pane active" id="home">
+
+        <h1>Questions Asked:</h1>
+
+<ul>
+    {% for question in questions %}
+    <li><a href="{% url 'question_detail' slug=question.slug %}">{{ question.title }}</a></li>
+    {% endfor %}
+</ul>
+  </div>
+
+
+  <div class="tab-pane" id="answers">
+
+        <h1>Answers</h1>
+      <ul>
+    {% for answer in answers %}
+
+        <li><a href="{% url 'question_detail'  answer.question.slug  %}#answer_{{ answer.id }}">{{ answer.question.title }}</a></li>
+    {% endfor %}
+</ul>
+
+  </div>
+ </div>
+
+</div>
+</div>
+</div>
+</div>

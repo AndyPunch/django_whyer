@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block head_title %}Задайте вопрос{% endblock head_title %}
+{% block ask_question_active  %}active{% endblock ask_question_active %}
+{% load sidebar_data_with_active_questions from question %}
+{% block submenu %} {% endblock submenu %}
+{% block content %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9">
+        {% if user.is_authenticated %}
+          <div class="form_question box sidebar-shadow">
+            <h2> Задайте вопрос</h2>
+            <hr>
+
+            <form id="question-form" action="" onsubmit="editor.post();" method="post">
+              {% include "snippets/forms/form_base.html" %}
+              <div>
+                <button style="margin-top: 10px"  type="submit" class="btn btn-default">Опубликуйте ваш вопрос</button>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+      </div><!--/span-->
+
+
+      {% block sidebar %}
+        {% sidebar_data_with_active_questions %}
+      {% endblock sidebar %}
+    </div>
+  </div>
+{% endblock content %}
+
+{% block script %}
+  <script type="text/javascript">
+     $(function() {
+    var availableTags = [{{ tags|safe }}];
+    function split( val ) {
+                    return val.split( /,\s*/ );
+                }
+                function extractLast( term ) {
+                    return split( term ).pop();
+                }
+                $( "#id_tag" )
+    // don't navigate away from the field on tab when selecting an item
+                        .bind( "keydown", function( event ) {
+                            if ( event.keyCode === $.ui.keyCode.TAB &&
+                                    $( this ).data( "ui-autocomplete" ).menu.active ) {
+                                event.preventDefault();
+                            }
+                        })
+                        .autocomplete({
+                            minLength: 0,
+                            source: function( request, response ) {
+    // delegate back to autocomplete, but extract the last term
+                                response( $.ui.autocomplete.filter(
+                                        availableTags, extractLast( request.term ) ) );
+                            },
+                            focus: function() {
+    // prevent value inserted on focus
+                                return false;
+                            },
+                            select: function( event, ui ) {
+                                var terms = split( this.value );
+    // remove the current input
+                                terms.pop();
+    // add the selected item
+                                terms.push( ui.item.value );
+    // add placeholder to get the comma-and-space at the end
+                                terms.push( "" );
+                                this.value = terms.join( ", " );
+                                return false;
+                            }
+                        });
+    });
+
+
+$(document).ready(
+  function() {
+    $('#id_question_text').redactor({
+      buttons: ['formatting', 'bold', 'italic', 'deleted',
+               'unorderedlist', 'orderedlist', 'outdent', 'indent',
+               'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']
+      }
+    );
+  }
+);
+
+
+
+</script>
+{% endblock script %}

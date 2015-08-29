@@ -1,0 +1,13 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}Подтвердите ваш e-mail{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <h1>Подтвердите ваш e-mail</h1>
+    <p>
+    Мы отправили вам электронное письмо на <a href="mailto:{{ email }}"> {{ email }} </a> со ссылкой для подтверждения. Пожалуйста, проверьте ваш электронный ящик
+   и кликните по ссылке для продолжения.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load gravatar %}
+
+{% block head_title %}Пользователи{% endblock head_title %}
+
+{% block question_users_all_active  %}active{% endblock question_users_all_active %}
+
+{% block submenu %} {% endblock submenu %}
+
+{% block content %}
+<div class="tags_all box sidebar-shadow">
+  <h1>Пользователи</h1>
+  <div>
+    <table>
+      <tbody>
+        <tr>
+          <td style="padding-left:5px">
+          {% csrf_token %}
+            <input class="form-group form-control" style="margin-bottom: 10px" type="text" id="search_user" placeholder="Поиск пользователя..." name="search" />
+          </td>
+        </tr>
+        </tbody></table>
+    </div>
+    <div class="container" style="margin-top: 20px">
+      <div id="search-user-results" class="table-responsive">
+        <table class="paginated">
+          {% for row in rows %}
+            <tr style="height: 110px">
+               {% for u in row %}
+                 <td style="min-width: 230px">
+                   {% if not u.userprofile.avatar %}
+                     <div class="user-list-ava">
+                       <img src="{% gravatar_url u.userprofile.user.email %}"/>
+                     </div>
+                   {% else %}
+                     <div class="user-list-ava">
+                       <img src="{{ u.userprofile.avatar.url }}"/>
+                     </div>
+                   {% endif %}
+                   <span  title="Рейтинг пользователя"><b>{{ u.userprofile.reputation }}</b></span><br>
+                   <a href="{% url 'user_detail' username=u %}">{{ u }}</a>
+                 </td>
+               {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+        {% if is_paginated %}
+          <ul class="pagination">
+          {% if page_obj.has_previous %}
+            {% if 'search' in request.GET %}
+              <li><a href="?search={{ search_text }}&page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+              <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% endif %}
+          {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% ifequal num page_obj.number %}
+              <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+              {% if 'search' in request.GET %}
+                <li><a href="?search={{ search_text }}&page={{ num }}">{{ num }}</a></li>
+              {% else %}
+                <li><a href="?page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endifequal %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            {% if 'search' in request.GET %}
+              <li><a href="?search={{ search_text }}&page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+              <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% endif %}
+          {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+

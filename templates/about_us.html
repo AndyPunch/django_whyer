@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load active from custom_tt %}
+{% load humanize %}
+{% load static %}
+
+{% block head_title %}О сайте{% endblock %}
+
+{% block title %}
+  <div class="container">
+    <div class="header-box">
+      <h2  class="h-ms text-center">О сайте</h2>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9">
+        <div class="box blog_teaser">
+          <p>
+            Клон stackoverflow.com, написан на Django.
+          </p>
+          <p>
+            Репозиторий сайта на <a href="https://bitbucket.org/andy_punch/django_whyer">bitbucket.org</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+
+
+{% block about_us_active %}footer_menu_active{% endblock about_us_active %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load sidebar_data_with_active_questions from question %}
+{% block head_title %}Добавить вопрос{% endblock head_title %}
+
+{% load active from custom_tt %}
+{% block title %}
+
+{% endblock %}
+{% block ask_question_active  %}active{% endblock ask_question_active %}
+
+{% block submenu %} {% endblock submenu %}
+
+{% block content %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9">
+        <div class="content-page box blog_teaser">
+          <p>Добро пожаловать!</p>
+          <p>
+            Мы с радостью поможем вам, но реальность такова, что не каждый вопрос имеет свой ответ.
+            Прочитайте несколько советов для того чтобы <b>улучшить ваши шансы</b>:
+          </p>
+          <h2>Поиск, и ещё раз поиск</h2>
+          <p>
+            <b>Пользовались ли вы поиском</b> <i>прежде чем</i> задать ваш вопрос?
+            Если не пользовались, попробуйте найти ответ с помощью<a href="{% url 'question_tags_all' %}"> <b>поиска
+            среди тегов </b> </a> или воспользуйтесь формой ниже для поиска в существующих вопросах и ответах.
+          </p>
+          <div>
+            <form  action="{% url 'search' %}"  method="get">
+              <table  width="100%">
+                <tr>
+                  <td>
+                    <input type="text" name="search"  class="form-control" placeholder="Введите слово для поиска">
+                  </td>
+                  <td>
+                  <button  type="submit" class="btn btn-default">Искать</button>
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </div>
+          <h2>Задавайте вопрос по существу</h2>
+          <p>Если вы зададите "туманный" вопрос, то получите "туманный" ответ. Но если вы зададите чёткий, детальный вопрос, вам предоставят полезный и уместный ответ.</p>
+          <h2>Будьте готовы к восприятию нового</h2>
+          <p>Ответ на ваш вопрос может не всегда быть таким, каким бы вы хотели его видеть, но это не значит что он плохой.</p>
+          <input type="checkbox"  id="advised">
+          <label for="advised">&nbsp; спасибо, я буду придерживаться этих советов, задавая вопрос</label>
+          <a  id="advised_link"  class="btn">&nbsp;&nbsp;&nbsp;>> задать вопрос</a>
+        </div>
+      </div><!--/span-->
+
+      {% block sidebar %}
+        {% sidebar_data_with_active_questions %}
+      {% endblock sidebar %}
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block script %}
+  <script type="text/javascript">
+    $(function() {
+      $("#advised").click(function() {
+        if ($('#advised_link').attr('href')) {
+          $('#advised_link').removeAttr('href');
+        } else {
+          $('#advised_link').attr('href', '{% url "ask_question_form" %}');}
+      });
+    });
+  </script>
+{% endblock script %}

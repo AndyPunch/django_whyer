@@ -1,0 +1,44 @@
+{% comment %}
+<!--Если нужна постраничная навигация-->
+  {% if  is_paginated %}
+<ul class="pager">
+    <!--Если есть предыдущая страница - то делаю ссылку "назад"-->
+    {% if  page_obj.has_previous %}
+     <li class="previous"><a  href="?page={{ page_obj.previous_page_number }}">назад</a></li>  |
+    {% endif %}
+    <!--Выводим текущую страницу из всех возможных-->
+    страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    <!--Если есть следующая страница - то ссылка "вперед"-->
+    {% if  page_obj.has_next %}|
+       <li class="next"><a href="?page={{ page_obj.next_page_number }}">вперед</a></li>
+    {% endif %}
+</ul>
+  {% endif %}
+ <hr>
+
+{% endcomment %}
+
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% ifequal num page_obj.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+      {% endifequal %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  </ul>
+{% endif %}
+

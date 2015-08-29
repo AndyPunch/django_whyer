@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load isfollow_question sidebar_data_with_active_questions from question %}
+
+{% load active from custom_tt %}
+{% load static %}
+{% load gravatar %}
+{% block head_title %}{{ question_tags.name }}{% endblock head_title %}
+
+{% block submenu %}
+ <div class="container">
+   <div class="header-box">
+     <h2 class="h-ms text-center">Вопросы по тегу - "{{ question_tags.name }}"</h2>
+   </div>
+ </div>
+{% endblock submenu %}
+{% block content %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9 tab-content">
+        {% for question in question_list  %}
+          <div class="box blog_teaser">
+            <p class="pull-right visible-xs">
+              <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+            </p>
+            <h2 style="margin-top: 5px"><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h2>
+            <hr>
+            {% include "misc/questions/top_question.html" %}
+            <p>{{ question.question_text|truncatewords:30|safe }}</p>
+          </div>
+          {% include 'misc/questions/bottom_question.html' %}
+        </div>
+      {% empty %}
+         <div class="alert alert-info text-center">
+           Пока нет ни одного вопроса связанного с этим тегом
+         </div>
+      {% endfor %}
+      {% include "snippets/pagination.html" %}
+    </div>
+
+    {% block sidebar %}
+      {% sidebar_data_with_active_questions %}
+    {% endblock sidebar %}
+  </div>
+  </div>
+  <div class="question_dialog">
+    <div id="dialog_vote_forbit">
+      <p>Вы не можете голосовать за свой контент<span style="float: right" >&times;</span></p>
+    </div>
+   </div>
+{% endblock content %}
+
+{% block script %}
+  {% include 'questions_answers/for_java/question_list.html'%}
+{% endblock script %}

@@ -1,0 +1,42 @@
+{% if question_search_tags.count > 0 %}
+
+    <table>
+      {% for row in rows_search_tags %}
+        <tr style="height: 110px">
+          {% for questions_tag in row %}
+            <td style="min-width: 230px">
+              <a class="post-tag" href="{{ questions_tag.get_absolute_url  }}">{{ questions_tag.name }}</a>
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+
+    <ul class="pagination">
+      {% if rows_search_tags.has_previous %}
+        <li><a href="?search={{ search_text }}&page={{ rows_search_tags.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><a href="#">&laquo;</a></li>
+      {% endif %}
+
+      {% for num in rows_search_tags.paginator.page_range %}
+        {% ifequal num rows_search_tags.number %}
+          <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+        {% else %}
+          <li><a href="?search={{ search_text }}&page={{ num }}">{{ num }}</a></li>
+        {% endifequal %}
+      {% endfor %}
+
+      {% if rows_search_tags.has_next %}
+         <li><a href="?search={{ search_text }}&page={{ rows_search_tags.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><a href="#">&raquo;</a></li>
+      {% endif %}
+    </ul>
+  {% else %}
+    <div style="width: 76%"  class="alert alert-info  text-center">
+      <li style="list-style-type: none">По вашему запросу ничего не найдено</li>
+    </div>
+
+{% endif %}
+

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+{% load static %}
+{% load active a_active from custom_tt %}
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{% static "static/img/favicon/whyer.png" %}" />
+    <link rel="stylesheet"  href="{% static "static/css/jquery-ui-themes-1.10.4/themes/redmond/jquery-ui.min.css" %}"/>
+    <link rel="stylesheet"  href="{% static "static/css/bootstrap.min.css" %}"/>
+    <link rel="stylesheet"  href="{% static "static/redactor/redactor.css" %}"/>
+    <link rel="stylesheet"  href="{% static "static/css/dj2.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "static/css/offcanvas.css" %}"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+
+    <script src="{% static "static/js/jquery-2.1.0.min.js" %}"></script>
+    <script src="{% static "static/js/jquery-ui-1.10.4.js" %}"></script>
+    <script src="{% static "static/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "static/js/dj.js" %}"></script>
+    <script src="{% static "static/redactor/redactor.min.js" %}"></script>
+    <script src="{% static "static/js/offcanvas.js" %}"></script>
+
+    <title>
+      {% block head_title %}{% endblock %}
+    </title>
+
+   </head>
+  <body>
+    <div class="page-wrapper">
+      <div role="navigation" class="navbar  navbar-inverse navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">Whyer (Sandbox)</a>
+          </div>
+          <div class="navbar-collapse collapse in " style="height: auto;">
+            <ul class="nav navbar-nav navbar-right">
+
+              {% if not user.is_authenticated %}
+                {% url 'account_signup' as url_register %}
+                <li class="{% active request.path url_register %}"><a href="{{ url_register }}">Регистрация</a></li>
+                {% url 'account_login' as url_login %}
+                <li class="{% active request.path url_login %}"><a href="{{ url_login }}">Вход</a></li>
+              {% endif %}
+
+              {% if user.is_authenticated %}
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle " data-toggle="dropdown">{{ user }}<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><h4 class="text-center">Профиль</h4></li>
+                  <li><a class="glyphicon glyphicon-user icon-color" href="{% url 'my_profile' %}"> Мой профиль </a></li>
+                  <li><a class="glyphicon glyphicon-cog icon-color" href="{% url 'userprofile_update' %}"> Мои настройки</a></li>
+                  <li class="divider"></li>
+                  <li><a class="glyphicon glyphicon-log-out icon-color" href="{% url 'account_logout' %}"> Выход </a></li>
+                </ul>
+              </li>
+              <li class="{%block logout_active%}{%endblock%}"><a href="{% url 'account_logout' %}">Выход</a></li>
+            </ul>
+              {% endif %}
+          </div><!-- /.nav-collapse -->
+        </div><!-- /.container -->
+      </div>
+
+      <div class="jumbotron">
+        <div class="container">
+          <div role="navigation" class="navbar ">
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="">
+              <form action="{% url 'search' %}" class="navbar-form navbar-left" method="get">
+                <input type="text" name="search"  class="form-group form-control form-control-custom" placeholder="Введите слово для поиска">
+              </form>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+
+             {% url 'question_list' as url_question %}
+             <li class="{% a_active request.path url_question %}"><a href="{{ url_question }}">Вопросы и ответы</a></li>
+
+          </ul>
+        </div>
+      </div>
+
+      {% block title %}
+        <div class="container">
+          <div class="header-box">
+            <h2 class="h-ms text-center"><a href="{% url "my_profile" %}">Профиль {{ user }}</a></h2>
+          </div>
+        </div>
+      {% endblock title %}
+
+      {% block submenu %}
+
+      {% endblock submenu %}
+      {% if messages %}
+        <div class="container">
+          <ul>
+            {% for message in messages %}
+              <div class="alert alert-info alert-dismissable text-center">
+                <button type="button" class="close"  data-dismiss="alert" aria-hidden="true">&times;</button>
+                <span align="center">{{ message }}</span>
+              </div>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% block content %}
+        {% block subcontent %}
+        {% endblock subcontent %}
+      {% endblock content %}
+      <div class="page-buffer"></div>
+    </div>
+    <footer>
+      <div class="footer" >
+        <div class="container">
+          <div class="navbar-header navbar">
+            <div class="collapse navbar-collapse">
+            </div>
+          </div>
+          <ul class="nav navbar-nav ">
+            <li class=""><a  href="{% url 'about_us' %}" class="footer_a">О сайте</a></li>
+            <li class=""><a href="{% url 'contact' %}" class="footer_a">Контакты</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+  {% block script %}
+    {% endblock script %}
+      <script>
+        window.setTimeout(function() {
+        $(".alert-dismissable").fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove();
+         });
+         }, 4000);
+      </script>
+</html>

@@ -1,0 +1,23 @@
+{% load humanize %}
+{% load isfollow_question from question %}
+{% load active from custom_tt %}
+{% load static %}
+{% load gravatar %}
+  <div align="right">
+    <div style="width: 200px; height:70px; background-color: #E7ECEE">
+      <div class="text-left">
+        {{ answer.created_at|naturalday }} в {{ answer.created_at|time:"H:i" }}
+      </div>
+      <div style="float: left; margin-right: 7px">
+        {% if not answer.author.userprofile.avatar %}
+          <div class="user-list-ava"><img src="{% gravatar_url answer.author.userprofile.user.email %}"/></div>
+        {% else %}
+          <div class="user-list-ava"><img src="{{ answer.author.userprofile.avatar.url }}"/></div>
+        {% endif %}
+      </div>
+      <div class="text-left" style="line-height: 22px" >
+        <a href="{% url 'user_detail' username=answer.author %}" title="Автор ответа">{{ answer.author }}</a><br>
+        <span id="reputation_answer_{{ answer.id }}" class="reputation_answer_{{ answer.author }}" title="Рейтинг пользователя"><b>{{ answer.author.userprofile.reputation }}</b></span>
+      </div>
+    </div>
+  </div>

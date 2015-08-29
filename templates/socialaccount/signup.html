@@ -1,0 +1,22 @@
+{% extends "account/base.html" %}
+{% load url from future %}
+{% load i18n %}
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+  <div class="auth-form box sidebar-shadow">
+    <h1>Регистрация...</h1>
+    <hr>
+    <p>
+      {% blocktrans with provider_name=account.get_provider.name site_name=site.name %} Вы использовали {{provider_name}}
+      для того чтобы войти на сайт {{site_name}}. Для завершения заполните следующую форму:{% endblocktrans %}
+    </p>
+    <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+      {% include 'snippets/forms/form_base.html' %}
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <button type="submit" class="btn btn-default">Зарегистрироваться</button>
+    </form>
+  </div>
+{% endblock %}

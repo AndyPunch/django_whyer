@@ -1,0 +1,169 @@
+{% extends "profiles/base_profile.html" %}
+{% load gravatar %}
+
+{% block head_title %}Профиль {{ userinfo.userprofile.user }}{% endblock %}
+
+{% block title %}
+  <div class="container">
+    <div class="header-box">
+      <h2 class="h-ms text-center">Профиль {{ userinfo.userprofile.user }}</h2>
+    </div>
+  </div>
+{% endblock title %}
+
+{% block submenu %}
+<div class="container">
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active"><a style="outline: none" href="#home" data-toggle="tab">Общая информация</a></li>
+      <li class=""><a style="outline: none" href="#questions" data-toggle="tab">Вопросы</a></li>
+      <li class=""><a style="outline: none" href="#answers" data-toggle="tab">Ответы</a></li>
+      <li class=""><a style="outline: none" href="#favorite" data-toggle="tab">Избранное</a></li>
+    </ul>
+  </div>
+<h2></h2>
+</div>
+{% endblock submenu %}
+
+{% block subcontent %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9 box blog_teaser">
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="home">
+            <p class="pull-right visible-xs">
+              <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+            </p>
+            <p><strong>Зарегистрирован: </strong> {{ userinfo.userprofile.user.date_joined }}</p>
+            <p><strong>Активность: </strong> Последний раз был на сайте {{ userinfo.userprofile.user.last_login }}</p>
+            <hr>
+            {% if userinfo.userprofile.bio %}
+              <p>{{ userinfo.userprofile.bio|safe }}</p>
+              <hr>
+            {% endif %}
+            <div class="user-panel-left">
+              <h1><small>{{ questions|length }}</small> Вопросы </h1>
+              <hr>
+
+              <table>
+                <tbody>
+                  {% for question in questions|slice:":5" %}
+                    <tr>
+                      <td><a href="{% url 'question_detail' slug=question.slug %}">{{ question.title }}</a><hr></td>
+                    </tr>
+                  {% empty %}
+                    <div  class="alert alert-info text-center">
+                    Здесь пока что нет ни одного вопроса
+                    </div>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <div class="text-right">
+                <a  href="#questions" data-toggle="tab">смотреть все >></a>
+              </div>
+            </div>
+            <div class="user-panel">
+              <h1><small>{{ answers|length }}</small> Ответы </h1>
+              <hr>
+              <table>
+                <tbody>
+                  {% for answer in answers|slice:":5" %}
+                    <tr>
+                      <td><a href="{% url 'question_detail' slug=answer.question.slug  %}#answer_{{ answer.id }}">{{ answer.question.title }}</a><hr></td>
+                    </tr>
+                  {% empty %}
+                    <div  class="alert alert-info text-center">Здесь пока что нет ни одного ответа</div>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <div class="text-right" >
+                <a href="#answers" data-toggle="tab">смотреть все >></a>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="questions">
+            <div style="margin-top: 20px">
+              {% if userinfo.userprofile.user == user %}
+                <h3>Мои вопросы:</h3>
+              {% else %}
+                <h3>Вопросы {{ userinfo.userprofile.user }}:</h3>
+              {% endif %}
+              {% for question in questions %}
+                <p><a href="{% url 'question_detail' slug=question.slug %}">{{ question.title }}</a></p>
+                <hr>
+              {% empty %}
+                <div class="alert alert-info text-center">
+                  Здесь пока что нет ни одного вопроса
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="tab-pane fade" id="answers">
+            <div style="margin-top: 20px">
+              {% if userinfo.userprofile.user == user %}
+                <h3>Мои ответы:</h3>
+              {% else %}
+                <h3>Ответы {{ userinfo.userprofile.user }}:</h3>
+              {% endif %}
+              {% for answer in answers %}
+                <p><a href="{% url 'question_detail' slug=answer.question.slug  %}#answer_{{ answer.id }}">{{ answer.question.title }}</a></p>
+                <hr>
+              {% empty %}
+                <div class="alert alert-info text-center">
+                  Здесь пока что нет ни одного ответа
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="tab-pane fade" id="favorite">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#favorite_questions" data-toggle="tab"><small>Вопросы</small></a></li>
+            </ul>
+
+            <div class="tab-content">
+              <div class="tab-pane fade in active" id="favorite_questions">
+                <div style="margin-top: 20px">
+                  {% for saved_question in saved_questions %}
+                    <p><a href="{{ saved_question.question.get_absolute_url }}">{{ saved_question.question.title}}</a></p>
+                    <hr>
+                  {% empty %}
+                    <div class="alert alert-info text-center">Здесь пока что нет ни одного избранного вопроса</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--/span-->
+
+      {% block sidebar %}
+        <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+          <div class="list-group ">
+            <div align="center" class="list-group-item-left-sidebar" style="border-top-left-radius: 4px; border-top-right-radius: 4px;">
+              <h4 class="list-group-item-left-sidebar text-center">{{ userinfo.userprofile.user }}</h4>
+              {% if not userinfo.userprofile.avatar %}
+                <img class="img-thumbnail" src="{% gravatar_url userinfo.userprofile.user.email %}" alt="{{ userinfo }}" />
+              {% else %}
+                <img  class="img-thumbnail" src="{{ userprofile.avatar.url }}" alt="{{ userinfo }}" />
+              {% endif %}
+
+              <h4 title="Рейтинг пользователя" class="list-group-item-left-sidebar text-center">{{ userinfo.userprofile.reputation }}</h4>
+
+              {% if userinfo.userprofile.website %}
+                <li class="list-group-item-left-sidebar"><a title="Сайт {{ userinfo.username }}" href="{{ userinfo.userprofile.website }}">Website/Blog</a></li>
+              {% endif %}
+
+              {% if userinfo.userprofile.user == user %}
+                <li class="list-group-item-left-sidebar"><a  href="{% url 'avatar_upload' %}">Изменить аватар</a></li>
+                <li class="list-group-item-left-sidebar"><a href="{% url 'userprofile_update' %}"> Мои Настройки</a></li>
+                <li class="list-group-item-left-sidebar"><a href="{% url 'profile_delete' pk=userinfo.userprofile.pk %}"> Удалить профиль</a></li>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endblock sidebar %}
+  </div>
+{% endblock subcontent %}
+
+

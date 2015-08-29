@@ -1,0 +1,14 @@
+{% load ratings %}
+{% if user.is_authenticated %}
+  {% rating_by_user user on answer.rating as vote %}
+    <div style="display: none" class='foo2'>{{ answer.id }}</div>
+    {% if vote > 0 and vote == "up" %}
+      <a style="outline: none" {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="defaultClass" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-up icon-style vote_up"></span></a><span id="score_answer_{{ answer.id }}" style="font-size: 30px"> <b> {{ answer.rating.score }} </b> </span><a style="outline: none" {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="vote_answer_link_clear_down" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-down icon-style"></span></a>
+    {% elif vote > 0 and vote == "down" %}
+      <a style="outline: none" {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="vote_answer_link_clear_up" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-up icon-style"></span></a><span id="score_answer_{{ answer.id }}" style="font-size: 30px"> <b> {{ answer.rating.score }} </b> </span><a style="outline: none"  {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="defaultClass" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-down icon-style vote_down"></span></a>
+    {% else %}
+       <a style="outline: none" {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="vote_answer_link_up" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-up icon-style"></span></a><span id="score_answer_{{ answer.id }}" style="font-size: 30px"> <b> {{ answer.rating.score }} </b> </span><a style="outline: none" {% if user == answer.author %} id="vote_answer_forbid_{{ answer.id }}" {% elif user != answer.author %} class="vote_answer_link_down" {% endif %} href=""><span class="glyphicon glyphicon-thumbs-down icon-style"></span></a>
+    {% endif %}
+{% elif not user.is_authenticated %}
+  <a style="outline: none"  href="{% url 'question_rate' object_id=answer.pk score='up' %}"><span class="glyphicon glyphicon-thumbs-up icon-style"></span></a><span id="score_answer_{{ answer.id }}" style="font-size: 30px"> <b> {{ answer.rating.score }} </b> </span><a style="outline: none"  href="{% url 'question_rate' object_id=answer.pk score='down' %}"><span class="glyphicon glyphicon-thumbs-down icon-style"></span></a>
+{% endif %}

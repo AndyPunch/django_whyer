@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block head_title %}Теги{% endblock head_title %}
+{% block question_tags_all_active  %}active{% endblock question_tags_all_active %}
+{% block submenu %} {% endblock submenu %}
+  {% block content %}
+    <div class="tags_all box sidebar-shadow">
+        <h1>Теги</h1>
+      <div>
+        <p>
+          Теги - это ключевые слова которые распределяют по категориям ваши вопросы.
+          Правильное использование тегов позволяет другим находить ответ на ваш вопрос с большей легкостью.
+        </p>
+        <table>
+          <tbody>
+            <tr>
+              <td style="padding-left:5px">
+                <form>{% csrf_token %}
+                  <input class="form-group form-control" style="margin-bottom: 10px" type="text" id="search_tag" placeholder="Поиск тега..." name="search" />
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="container" style="margin-top: 20px">
+        <div id="search-tag-results" class="table-responsive">
+          <table>
+            {% for row in rows %}
+              <tr style="height: 40px">
+                {% for tags in row %}
+                  <td style="min-width: 230px">
+                    <a class="post-tag" href="{% url 'question_tags' slug=tags.slug %}">{{ tags.name }}</a>
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </table>
+          {% if is_paginated %}
+            <ul class="pagination">
+              {% if page_obj.has_previous %}
+                {% if 'search' in request.GET %}
+                  <li><a href="?search={{ search_text }}&page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+              {% else %}
+                <li class="disabled"><a href="#">&laquo;</a></li>
+              {% endif %}
+
+              {% for num in page_obj.paginator.page_range %}
+                {% ifequal num page_obj.number %}
+                  <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+                {% else %}
+                  {% if 'search' in request.GET %}
+                    <li><a href="?search={{ search_text }}&page={{ num }}">{{ num }}</a></li>
+                  {% else %}
+                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endifequal %}
+              {% endfor %}
+
+              {% if page_obj.has_next %}
+                {% if 'search' in request.GET %}
+                  <li><a href="?search={{ search_text }}&page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+              {% else %}
+                <li class="disabled"><a href="#">&raquo;</a></li>
+              {% endif %}
+            </ul>
+           {% endif %}
+          </div>
+        </div>
+      </div>
+    <div>
+  </div>
+{% endblock content %}
+
+
+
+

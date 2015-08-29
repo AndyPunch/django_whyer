@@ -1,0 +1,65 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block head_title %}Регистрация{% endblock %}
+{% block register_active %}active{% endblock register_active %}
+
+{% block content %}
+
+  <div class="auth-form box sidebar-shadow">
+    <h2> Регистрация <small>пользователя</small></h2>
+    <hr>
+    <form  id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% include "snippets/forms/form_base.html" %}
+
+         {% comment %}
+         {% csrf_token %}
+           {% if form.non_field_errors %}
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close"  data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ form.non_field_errors }}
+          </div>
+    {% endif %}
+
+            {% if form.username.errors  %}
+            <div class="alert alert-danger">
+            {{ form.username|add_class:" form-group form-control" }}
+            {{ form.username.errors }}
+            </div>
+            <br>
+            {% else %}
+            {{ form.username|add_class:" form-group form-control" }}<br>
+            {% endif %}
+
+            {{ form.password1|add_class:" form-group form-control" }}
+            {{ form.password1.errors }}
+            <br>
+            {{ form.password2|add_class:" form-group form-control" }}
+            {{ form.password1.errors }}
+            <br>
+            <input class="form-group form-control" id="id_email" name="email" type="email" placeholder="email@address.com">
+            {{ form.email.errors }}
+            <br>
+
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+         {% endcomment %}
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+
+          <button type="submit" class="btn btn-default">Зарегистрироваться</button>
+
+
+    </form>
+  <br>
+   <p>
+        <b>Уже зарегистрированы?</b> <a href="{% url 'account_login' %}"> Вход </a>
+      </p>
+  </div>
+{% endblock content %}
+
+{% block extra_js %}
+
+{% endblock extra_js %}

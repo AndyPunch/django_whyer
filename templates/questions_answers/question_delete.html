@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block submenu_2 %}{% endblock submenu_2 %}
+{% block head_title %}Удалить вопрос{% endblock head_title %}
+{% block content %}
+  <div class="container">
+    <div align="center">
+      <h1>Удаление вопроса</h1>
+      <hr>
+      <p>
+        Эй, вы уверены, что хотите удалить вопрос "{{ object.title }}"?
+      </p>
+      <form method="post">
+        {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Ага, я уверен!</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

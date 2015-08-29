@@ -1,0 +1,17 @@
+{% extends 'profiles/base_profile.html' %}
+{% block head_title %}Удалить аватар{% endblock head_title %}
+{% block content %}
+  <div class="container">
+    <div align="center">
+      <h1>Удаление профиля</h1>
+      <hr>
+      <p>
+        Вы уверены, что вы хотите удалить профиль?
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Да, я уверен.</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,166 @@
+<script type="text/javascript">
+{% if user.is_authenticated %}
+$(function() {
+  $(document).on('click', '.vote_question_link_up', function(e) {
+    e.preventDefault();
+    var link_up = $(this);
+    var question_id = $(this).prev('.foo2').text();
+    var score = $('#score_question_' + question_id);
+    var count_score = Number(score.text());
+    var reputation = $('#reputation_question_' + question_id);
+    var question_author = reputation.prevAll('a').text();
+    var count_reputation = Number(reputation.text());
+
+    $.ajax({
+    url: '/rate_question/' + question_id + '/up/',
+
+    success: function(data) {
+      link_up.nextAll().eq(1).removeClass('vote_question_link_down');
+      link_up.nextAll().eq(1).addClass('vote_question_link_clear_down');
+      score.prevAll().find(':first-child').addClass('vote_up');
+      count_score += 1;
+      count_reputation += 1;
+      score.html('<b> ' + count_score + ' </b>');
+      $('.reputation_question_' + question_author).html('<b> ' + count_reputation + ' </b>');
+      link_up.removeClass('vote_question_link_up');
+      link_up.addClass('defaultClass');
+
+      }
+    });
+  });
+});
+
+
+$(function() {
+  $(document).on('click', '.vote_question_link_down', function(e) {
+    e.preventDefault();
+    var link_down = $(this);
+    var question_id = $(this).prevAll('.foo2').text();
+    var score = $('#score_question_' + question_id);
+    var count_score = Number(score.text());
+    var reputation = $('#reputation_question_' + question_id);
+    var question_author = reputation.prevAll('a').text();
+    var count_reputation = Number(reputation.text());
+    $.ajax({
+      url: '/rate_question/' + question_id + '/down/',
+
+      success:function(data) {
+        link_down.prevAll().eq(1).removeClass('vote_question_link_up');
+        link_down.prevAll().eq(1).addClass('vote_question_link_clear_up');
+        link_down.find(':first-child').addClass('vote_down');
+        count_score -= 1;
+        count_reputation -= 1;
+        score.html('<b> ' + count_score + ' </b>');
+        $('.reputation_question_' + question_author).html('<b> ' + count_reputation + ' </b>');
+        link_down.removeClass('vote_question_link_down');
+        link_down.addClass('defaultClass');
+      }
+    });
+  });
+});
+
+
+$(function() {
+  $(document).on('click', '.vote_question_link_clear_up', function(e) {
+    e.preventDefault();
+    var clear_up = $(this);
+    var question_id = $(this).prevAll('.foo2').text();
+    var score = $('#score_question_' + question_id);
+    var count_score = Number(score.text());
+    var reputation = $('#reputation_question_' + question_id);
+    var question_author = reputation.prevAll('a').text();
+    var count_reputation = Number(reputation.text());
+    $.ajax({
+      url: '/rate_question/' + question_id + '/clear/',
+
+      success:function(data) {
+        score.nextAll().find(':first-child').removeClass('vote_down');
+        count_score += 1;
+        count_reputation += 1;
+        score.html('<b> ' + count_score + ' </b>');
+        $('.reputation_question_' + question_author).html('<b> ' + count_reputation + ' </b>');
+        clear_up.nextAll().removeClass('defaultClass');
+        clear_up.nextAll('a').addClass('vote_question_link_down');
+        clear_up.removeClass('vote_question_link_clear_up');
+        clear_up.addClass('vote_question_link_up');
+      }
+    });
+  });
+});
+
+$(function() {
+  $(document).on('click', '.vote_question_link_clear_down', function(e) {
+    e.preventDefault();
+    var clear_down = $(this);
+    var question_id = $(this).prevAll('.foo2').text();
+    var score = $('#score_question_' + question_id);
+    var count_score = Number(score.text());
+    var reputation = $('#reputation_question_' + question_id);
+    var question_author = reputation.prevAll('a').text();
+    var count_reputation = Number(reputation.text());
+    $.ajax({
+      url: '/rate_question/' + question_id + '/clear/',
+
+      success:function(data) {
+        score.prevAll().find(':first-child').removeClass('vote_up');
+        count_score -= 1;
+        count_reputation -= 1;
+         score.html('<b> ' + count_score + ' </b>');
+         $('.reputation_question_' + question_author).html('<b> ' + count_reputation + ' </b>');
+         clear_down.prevAll().removeClass('defaultClass');
+         clear_down.prevAll('a').addClass('vote_question_link_up');
+         clear_down.removeClass('vote_question_link_clear_down');
+         clear_down.addClass('vote_question_link_down');
+      }
+    });
+  });
+});
+
+
+//отменяет действие по умолчанию на ссылке которая показывает что юзер уже проголосовал
+$(function() {
+  $(document).on('click', '.defaultClass', function(e) {
+       e.preventDefault();
+
+  });
+});
+
+{% endif %}
+
+
+//добавляет и удаляет цвета при наведении мышки на иконки
+$(function() {
+  $(".glyphicon-thumbs-up").on('mouseenter', function() {
+    $(this).css('color', 'green');
+  });
+  $(".glyphicon-thumbs-up").on('mouseleave', function() {
+    $(this).removeAttr('style');
+  });
+
+  $(".glyphicon-thumbs-down").on('mouseenter', function() {
+    $(this).css('color', 'red');
+  });
+  $(".glyphicon-thumbs-down").on('mouseleave', function() {
+    $(this).removeAttr('style');
+  });
+
+});
+
+
+$(function() {
+ $("#dialog_vote_forbit").dialog({
+  	autoOpen: false,
+    width:400,
+    height: 55,
+    position: [900, 55]
+
+  });
+
+  $("a[id*='forbid']").click(function(e) {
+    e.preventDefault();
+
+  $("#dialog_vote_forbit").dialog("open");
+    setTimeout("$('#dialog_vote_forbit').dialog('close')",3000);
+  });
+});
+</script>

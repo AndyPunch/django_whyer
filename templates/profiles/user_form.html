@@ -1,0 +1,32 @@
+{% extends 'profiles/base_settings.html' %}
+{% load active from custom_tt %}
+{% block head_title %}Мои настройки{% endblock %}
+{% block subcontent %}
+
+    <div class="auth-form box sidebar-shadow">
+      <h2>{{ headline }}</h2>
+      <hr>
+      <div>
+        <form action="" method="post">
+          {% include "snippets/forms/form_base.html" %}
+          <button type="submit" style="margin-top: 15px" class="btn btn-default">Сохранить изменения</button>
+        </form>
+      </div>
+    </div>
+
+{% endblock subcontent %}
+{% block script %}
+<script>
+
+$(document).ready(
+  function() {
+    $('#id_bio').redactor(
+      {buttons: ['formatting', 'bold', 'italic', 'deleted',
+      'unorderedlist', 'orderedlist', 'outdent', 'indent',
+      'image', 'video', 'file', 'table', 'link', 'alignment', 'horizontalrule']}
+    );
+  }
+);
+
+</script>
+{% endblock script %}

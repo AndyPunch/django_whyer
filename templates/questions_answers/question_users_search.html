@@ -1,0 +1,48 @@
+{% load gravatar %}
+{% if users_all.count > 0 %}
+  <table>
+    {% for row in rows_search_users %}
+      <tr style="height: 110px">
+        {% for u in row %}
+          <td style="min-width: 230px">
+            {% if not u.userprofile.avatar %}
+              <div class="user-list-ava"><img src="{% gravatar_url u.userprofile.user.email %}" /></div>
+            {% else %}
+               <div class="user-list-ava"><img src="{{ u.userprofile.avatar.url }}"/></div>
+            {% endif %}
+            <span  title="Рейтинг пользователя"><b>{{ u.userprofile.reputation }}</b></span><br>
+            <a href="{% url 'user_detail' username=u %}">{{ u }}</a>
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+  <ul class="pagination">
+    {% if rows_search_users.has_previous %}
+      <li><a href="?search={{ search_text }}&page={{ rows_search_users.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&laquo;</a></li>
+    {% endif %}
+    {% for num in rows_search_users.paginator.page_range %}
+      {% ifequal num rows_search_users.number %}
+        <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+      {% else %}
+        <li><a href="?search={{ search_text }}&page={{ num }}">{{ num }}</a></li>
+      {% endifequal %}
+    {% endfor %}
+    {% if rows_search_users.has_next %}
+      <li><a href="?search={{ search_text }}&page={{ rows_search_users.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><a href="#">&raquo;</a></li>
+    {% endif %}
+  </ul>
+
+{% else %}
+  <div style="width: 76%"  class="alert alert-info text-center">
+    <li style="list-style-type: none">По вашему запросу ничего не найдено</li>
+</div>
+{% endif %}
+
+
+
+

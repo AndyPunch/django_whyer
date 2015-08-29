@@ -1,0 +1,19 @@
+{% extends 'profiles/base_settings.html' %}
+{% block head_title %}Контакты{% endblock %}
+{% block title %}
+  <div class="container">
+    <div class="header-box">
+      <h2  class="h-ms text-center">Контакты</h2>
+    </div>
+  </div>
+{% endblock %}
+{% block content %}
+  <div class="auth-form box sidebar-shadow">
+    <h2>Отправьте сообщение.</h2>
+      <hr>
+    <form action="" method="post">
+      {% include 'snippets/forms/form_base.html' %}
+      <button style="margin-top: 10px"  type="submit" class="btn btn-default">Отправить</button>
+    </form>
+  </div>
+{% endblock content %}

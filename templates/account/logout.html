@@ -1,0 +1,21 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<div class="container">
+<div class="center_div">
+<h1>Выход</h1>
+
+<p>Вы уверены что хотите выйти из учётной записи?</p>
+
+<form method="post" action="{% url 'account_logout' %}">
+  {% csrf_token %}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{redirect_field_name}}" value="{{redirect_field_value}}"/>
+  {% endif %}
+  <button type="submit" class="btn btn-default">Выйти</button>
+
+</form>
+</div>
+</div>
+
+{% endblock %}

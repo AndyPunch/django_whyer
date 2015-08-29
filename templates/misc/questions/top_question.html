@@ -1,0 +1,9 @@
+{% load rupluralize from question %}
+  <div class="">
+    {% include 'questions_answers/rating_question.html' %} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="font-size: 30px"><b>
+    <span {% if question.answer_set.all|length > 0 %} style="color: #FFB606" {% endif %}>{{ question.answer_set.all|length }}</span>
+    </b></span> {{ question.answer_set.all|length|rupluralize:"ответ,ответа,ответов" }}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="glyphicon glyphicon-eye-open icon-style" title="Количество просмотров"></span>&nbsp{{ question.view_count }}
+

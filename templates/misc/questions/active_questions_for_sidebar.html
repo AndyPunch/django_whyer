@@ -1,0 +1,13 @@
+{% load static %}
+<div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+  <div class="list-group ">
+    <div class="list-group-item text-center" style="background-color: #E7ECEE" title="Вопросы с недавней активностью" >
+      <h4>Активные вопросы</h4>
+    </div>
+    {% for question in active_questions %}
+      <a href="{{ question.get_absolute_url }}" class="list-group-item">{{ question.title }}</a>
+    {% empty %}
+      <a href="" class="list-group-item text-center">Нет активных вопросов</a>
+    {% endfor %}
+  </div>
+</div>

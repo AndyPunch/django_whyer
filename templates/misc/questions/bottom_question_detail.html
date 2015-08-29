@@ -1,0 +1,61 @@
+{% load humanize %}
+{% load gravatar %}
+<div style="float:left">
+  <a id="share42" href="" rel="p.loadme">поделиться</a>&nbsp;
+  <p class="loadme">Нажмите чтобы поделиться:<br>
+    <span class="share42init"></span><br>
+    Или скопируйте ссылку: <br>
+    <input onclick="this.select();" type="text"  readonly="true" value="http://127.0.0.1:8002{{ request.path }}">
+  </p>
+  {% if question_detail.author == user %}
+    <a href="{% url 'question_edit' slug=question_detail.slug %}">редактировать</a> &nbsp;
+    <a href="{% url 'question_delete' slug=question_detail.slug %}">удалить</a>
+  {% endif %}
+</div>
+<div align="right">
+ <div style="width: 200px; height:70px; background-color: #E7ECEE">
+   <div class="text-left">
+     {{ question_detail.created_at|naturalday }} в {{ question_detail.created_at|time:"H:i" }}
+   </div>
+   <div style="float: left; margin-right: 7px">
+     {% if not question_detail.author.userprofile.avatar %}
+       <div class="user-list-ava"><img src="{% gravatar_url question_detail.author.userprofile.user.email %}"/></div>
+     {% else %}
+       <div class="user-list-ava"><img src="{{ question_detail.author.userprofile.avatar.url }}"/></div>
+     {% endif %}
+   </div>
+   <div class="text-left" style="line-height: 22px" >
+     <a href="{% url 'user_detail' username=question_detail.author %}" title="Автор вопроса">{{ question_detail.author }}</a><br>
+     <span id="reputation_question_detail_{{ question_detail.id }}" class="reputation_question_detail_{{ question_detail.author }}" title="Рейтинг пользователя"><b>{{ question_detail.author.userprofile.reputation }}</b></span>
+   </div>
+ </div>
+ <br>
+ <div class="text-left">
+   <span class=" icon-color glyphicon glyphicon-tags" title="теги"></span>&nbsp;&nbsp;
+   {% for question_tag in question_detail.question_tag.all %}
+     <a class="post-tag" href="{{ question_tag.get_absolute_url }}">{{ question_tag }}</a>
+     {% if not forloop.last %}&nbsp;{% endif %}
+   {% endfor %}
+ </div>
+</div>
+{% block script %}
+
+    <script>
+
+$(function(){
+  $("#share42").cluetip({
+    local: true,
+    arrows: true,
+    sticky: true,
+
+    width: 204,
+    showTitle: false,
+    activation: 'click',
+    closePosition: "bottom",
+    closeText: "X",
+    cluetipClass: "jtip"
+  });
+});
+</script>
+{% endblock script %}
+

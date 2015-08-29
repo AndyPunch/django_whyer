@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load isfollow_question from question %}
+{% load sidebar_data_with_active_questions from question %}
+{% load active from custom_tt %}
+{% load static %}
+{% load gravatar %}
+
+{% block head_title %}Whyer{% endblock head_title %}
+
+{% block title %}{% endblock %}
+
+{% block question_list_active  %}active{% endblock question_list_active %}
+{% block submenu %}
+  <div class="container">
+    <div>
+      <ul style="float: right" class="nav nav-tabs">
+        <li  class="active"><a href="{% url 'question_list' %}"><small>Новейшие</small></a></li>
+        <li class=""><a href="{% url 'featured_questions' %}?featured"><small>Популярные</small></a></li>
+        <li class=""><a href="{% url 'unanswered_questions' %}?unanswered"><small>Неотвеченные</small></a></li>
+        <li class=""><a href="{% url 'votes_questions' %}?votes"><small>По рейтингу</small></a></li>
+      </ul>
+    </div>
+    <h2>Все вопросы</h2>
+  </div>
+{% endblock submenu %}
+
+{% block content %}
+{{ recent_comments_answers }}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9">
+        {% for question in question_list  %}
+          <div class="box blog_teaser">
+            <p class="pull-right visible-xs">
+              <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+            </p>
+            <h2 style="margin-top: 5px"><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h2>
+            <hr>
+            {% include "misc/questions/top_question.html" %}
+            <p>{{ question.question_text|truncatewords:30|safe }}</p>
+          </div>
+          {% include 'misc/questions/bottom_question.html' %}
+          </div>
+
+          {% empty %}
+            <div class="alert alert-info text-center">
+              Здесь пока что нет ни одного вопроса
+            </div>
+          {% endfor %}
+          {% include "snippets/pagination.html" %}
+
+      </div>
+
+      {% block sidebar %}
+        {% sidebar_data_with_active_questions %}
+      {% endblock sidebar %}
+    </div>
+  </div>
+
+  <div class="question_dialog">
+    <div id="dialog_vote_forbit">
+      <p>Вы не можете голосовать за свой контент<span style="float: right" >&times;</span></p>
+    </div>
+  </div>
+{% endblock content %}
+{% block script %}
+  {% include 'questions_answers/for_java/question_list.html' %}
+{% endblock script %}

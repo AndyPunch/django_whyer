@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load rupluralize highlight from question %}
+
+{% block head_title %}Поиск{% endblock head_title %}
+
+<div class="container" style="margin-bottom: 30px">
+        <a class="{% block question_list_active  %}{% endblock question_list_active %} btn btn-default btn-question" href="{% url 'question_list' %}" role="button">Вопросы</a>&nbsp;
+        <a class="{% block question_tags_all_active  %}{% endblock question_tags_all_active %} btn btn-default btn-question" href="{% url 'question_tags_all' %}" role="button">Теги</a>&nbsp;
+        <a class="{% block question_users_all_active  %}{% endblock question_users_all_active %} btn btn-default btn-question" href="{% url 'question_users_all' %}" role="button">Пользователи</a>&nbsp;
+        <ul class="nav navbar-nav navbar-right">
+          <a class="{% block ask_question_active  %}{% endblock ask_question_active %} btn btn-default btn-question"  href="{% url 'ask_question' %}"  role="button" >Добавить вопрос</a>
+        </ul>
+      </div>
+{% block submenu_2 %}
+<div class="container" style="margin-bottom: 30px">
+        <a class=" btn btn-default btn-question" href="{% url 'question_list' %}" role="button">Вопросы</a>&nbsp;
+        <a class=" btn btn-default btn-question" href="{% url 'question_tags_all' %}" role="button">Теги</a>&nbsp;
+        <a class=" btn btn-default btn-question" href="{% url 'question_users_all' %}" role="button">Пользователи</a>&nbsp;
+        <ul class="nav navbar-nav navbar-right">
+          <a class="{ btn btn-default btn-question"  href="{% url 'ask_question' %}"  role="button" >Добавить вопрос</a>
+        </ul>
+      </div>
+
+
+<div class="container">
+  <div class="header-box">
+    <h2>Поиск</h2>
+    <p>
+      Здесь можно выполнить поиск по всем разделам этого сайта. Введите ключевые слова в текстовое поле и нажмите кнопку «искать».
+
+    </p>
+    <form  action="{% url 'search' %}"  method="get">
+      <table  width="100%">
+        <tr>
+          <td>
+            <input type="text" name="search"  class="form-control" placeholder="Поиск...">
+          </td>
+          <td>
+            <button  type="submit" class="btn btn-default">Искать</button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock submenu_2 %}
+
+{% block subcontent %}
+  {% if results|length > 0 %}
+    <div>
+      <h3>Результаты поиска</h3>
+        <p>
+          Поиск завершён. {{ results|length|rupluralize:"Результат,Результата,Результатов" }}: {{ results|length }}.</p>
+    </div>
+  {% endif %}
+  {% if report != '' %}
+    <div class="box blog_teaser">
+      <div class="alert alert-info text-center">
+        {{ report }}
+      </div>
+    </div>
+  {% else %}
+
+    {% for result in results %}
+      <div style="padding-top: 5px" class="box blog_teaser">
+      {% if result.name %}
+        <a class="post-tag" href="{% url 'question_tags' slug=result.slug %}">{{ result.name }}</a>
+      {% endif %}
+        <h3>
+          <a href="{{ result.get_absolute_url }}">{{ result.title|highlight:search }}</a>
+        </h3>
+        {{ result.question_text|safe|truncatewords:30|highlight:search  }}
+        <h3>
+          <a href="{{ result.question.get_absolute_url }}">{{ result.question.title|highlight:search }}</a>
+        </h3>
+        {{ result.answer_text|safe|truncatewords:30|highlight:search }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock subcontent %}

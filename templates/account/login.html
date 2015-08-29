@@ -1,0 +1,61 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block head_title %}Вход{% endblock %}
+
+{%block login_active%}active{%endblock%}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+  <div class="auth-form box sidebar-shadow">
+    <h2>Авторизуйтесь...</h2>
+    <hr>
+    <div>
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close"  data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+          {% if form.login.errors  %}
+            <div class="alert alert-danger">
+              <label for="id_login">Имя пользователя или e-mail<span style="color: red">*</span></label>
+              <input id="id_login" class="form-group form-control" maxlength="30" name="login" placeholder="Имя пользователя или e-mail" type="text" />
+              {{ form.login.errors }}
+            </div>
+            <br>
+          {% else %}
+            <label for="id_login">Имя пользователя или e-mail<span style="color: red">*</span></label>
+            <input  id="id_login"  class="form-group form-control" maxlength="30"  name="login"  placeholder="Имя пользователя или e-mail" type="text" />
+          {% endif %}
+          {% if form.password.errors %}
+            <div class="alert alert-danger">
+              <label for="id_password">Пароль<span style="color: red">*</span></label>
+              <input id="id_password"  class="form-group form-control" name="password" placeholder="Пароль" type="password" />
+              {{ form.password.errors }}
+            </div>
+            <br>
+          {% else %}
+            <label for="id_password">Пароль<span style="color: red">*</span></label>
+            <input id="id_password"  class="form-group form-control" name="password" placeholder="Пароль" type="password" />
+          {% endif %}
+          <div>
+            <input id="id_remember" name="remember" type="checkbox" />
+            <label for="id_remember">Запомнить меня</label>
+          </div>
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <div>
+            <button type="submit" class="btn btn-default">Войти</button>
+          </div>
+      </form>
+          <hr>
+      <p><b>Забыли свой пароль?</b> <a href="{% url 'account_reset_password' %}">  Получите новый  </a></p>
+                <p><b>Вам нужен новый аккаунт?</b>  <a href="{% url 'account_signup' %}"> Регистрация здесь </a></p>
+    </div>
+  </div>
+{% endblock %}

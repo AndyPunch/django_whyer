@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load isfollow_question rupluralize from question %}
+{% block question_list_active  %}active{% endblock question_list_active %}
+{% block head_title %}{{ question_detail.title }}{% endblock head_title %}
+{% block submenu %}{% endblock submenu %}
+
+{% block subcontent %}
+  <div class="box blog_teaser">
+    <p class="pull-right visible-xs">
+      <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+    </p>
+    <h2 style="margin-top: 10px;">{{ question_detail.title }}</h2>
+    <hr>
+    <div><span>{% include 'questions_answers/rating_question_detail.html' %} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      {% if user.is_authenticated %}
+        <a style="outline: none" class="save_question_link" href="">
+        <span id="save_question_{{ question_detail.id }}" {% if question_detail|isfollow_question:user %} class="glyphicon glyphicon-star icon-style favorite-color" title="Эта тема уже в избранном. Кликнете чтобы удалить." {% elif not question_detail|isfollow_question:user %} class="glyphicon glyphicon-star-empty icon-style icon-color" title="Добавить в избранное" {% endif %}></span></a>
+        {% for favorite_question in favorite_questions %}
+          {% if favorite_question == question_detail %}
+            <span id="count_{{ question_detail.id }}" title="Количество пользователей, добавивших вопрос в избранное">{{ favorite_question.savedquestion_count }}</span>
+          {% endif %}
+        {% endfor %} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      {% endif %}
+    </div>
+    <p> {{ question_detail.question_text|safe }} </p>
+    {% include "misc/questions/bottom_question_detail.html" %}
+    {% if user.is_authenticated %}
+      <br><a class="dropdown-comment-link" href="">добавить комментарий</a>
+    {% endif %}
+    <div class="dropdown-comment-container">
+      <form action="{% url 'add_question_comment' slug=question_detail.slug %}"  method="post">{% csrf_token %}
+        {% include 'snippets/forms/comment_question_form.html' %}
+        <button style="margin-top: 10px" name="form_comment_question" type="submit" class="btn btn-default">Опубликовать от имени {{ user }}</button>
+      </form>
+    </div>
+    <hr>
+    {% for comment in question_detail.comment_set.all %}
+    <div style="padding-left: 30px">
+      {{ comment.comment|safe }}
+      <div class="text-right">
+        <a {% if question_detail.author == comment.author %} class="owner" {% endif %} href="{% url 'user_detail' username=comment.author %}">{{ comment.author }}</a>&nbsp;
+        {{ comment.added }}
+      </div>
+    </div>
+    <hr>
+    {% endfor %}
+    <h3>
+      {{ question_detail.answer_set.all|length }} {{ question_detail.answer_set.all|length|rupluralize:"ответ,ответа,ответов" }}
+    </h3>
+  </div>
+  {% for answer in question_detail.answer_set.all %}
+    <div class="box blog_teaser">
+      <p class="pull-right visible-xs">
+        <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+      </p>
+      <a id="answer_{{ answer.id }}"></a>
+      {% include 'questions_answers/rating_answer.html' %}
+      <p>{{ answer.answer_text|safe }}</p>
+      {% include "misc/questions/bottom_answer.html" %}
+      {% if user.is_authenticated %}
+        <a class="dropdown-comment-link" href="">добавить комментарий</a>
+      {% endif %}
+      <div class="dropdown-comment-container">
+        <form  action="{% url 'add_answer_comment' id=answer.id %}" method="post">{% csrf_token %}
+          {% include 'snippets/forms/comment_answer_form.html' %}
+        <button style="margin-top: 10px" name="form_comment_question" type="submit" class="btn btn-default">Опубликовать от имени {{ user }}</button>
+        </form>
+      </div>
+      <hr>
+      {% for comment in answer.comment_set.all %}
+        <div style="padding-left: 30px">
+          {{ comment.comment|safe }}
+            <div class="text-right">
+              <a {% if question_detail.author == comment.author %} class="owner" {% endif %} href="{% url 'user_detail' username=comment.author %}">{{ comment.author }}</a>&nbsp;
+              {{ comment.added }}
+            </div>
+        </div>
+        <hr>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+    <div class="box blog_teaser">
+      <h3>Ваш ответ</h3>
+      <form action="{% url 'add_answer' slug=question_detail.slug %}"  method="post">{% csrf_token %}
+        {% include "snippets/forms/form_base.html" %}
+        <br>
+        <button type="submit" name="form_add_answer" class="btn btn-default">Опубликовать от имени {{ user }}</button>
+      </form>
+    </div>
+    {% elif not user.is_authenticated %}
+      <p>
+        Только <a href="{% url 'account_signup' %}">зарегистрированные</a> пользователи могут задавать вопросы, отвечать на вопросы, голосовать и оставлять комментарии.
+      </p>
+  {% endif %}
+  <div class="question_detail_dialog">
+    <div id="dialog_vote_forbit">
+      <p>Вы не можете голосовать за свой контент<span style="float: right" >&times;</span></p>
+    </div>
+  </div>
+  <div class="question_detail_dialog">
+    <div id="dialog_save_question">
+      <p>Вопрос <span id="question_dialog_text"></span> <span style="float: right" >&times;</span></p>
+    </div>
+  </div>
+{% endblock subcontent %}
+
+{% block sidebar %}
+  <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+    <div class="list-group ">
+      <div class="list-group-item text-center" style="background-color: #E7ECEE"><h4>Похожие вопросы</h4></div>
+        {% for q in related_questions  %}
+          <a href="{{ q.get_absolute_url }} " class="list-group-item">{{ q.title }}</a>
+        {% empty %}
+          <a href="#" class="list-group-item text-center">Нет похожих вопросов</a>
+        {% endfor %}
+      </div>
+    </div>
+{% endblock sidebar %}
+
+{% block script %}
+  {% include 'questions_answers/for_java/question_detail.html' %}
+{% endblock script %}

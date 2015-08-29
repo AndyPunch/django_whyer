@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load isfollow_question sidebar_data_with_active_questions from question %}
+{% load active from custom_tt %}
+{% load static %}
+{% load gravatar %}
+
+{% block head_title %}Неотвеченные вопросы{% endblock head_title %}
+
+{% block title %} {% endblock %}
+
+{% block question_list_active  %}active{% endblock question_list_active %}
+
+{% block submenu %}
+  <div class="container">
+    <div>
+      <ul style="float: right" class="nav nav-tabs">
+        <li class=""><a href="{% url 'question_list' %}"><small>Новейшие</small></a></li>
+        <li class=""><a href="{% url 'featured_questions' %}?featured"><small>Популярные</small></a></li>
+        <li class="active"><a href="{% url 'unanswered_questions' %}?unanswered"><small>Неотвеченные</small></a></li>
+        <li class=""><a href="{% url 'votes_questions' %}?votes"><small>По рейтингу</small></a></li>
+      </ul>
+    </div>
+    <p><h2>Неотвеченные вопросы</h2></p>
+   </div>
+{% endblock submenu %}
+
+{% block content %}
+  <div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+      <div class="col-xs-12 col-sm-9 tab-content">
+        {% for question in question_list %}
+          <div class="box blog_teaser">
+            <p class="pull-right visible-xs">
+              <button class="btn btn-primary btn-xs" data-toggle="offcanvas" type="button">Переключить</button>
+            </p>
+            <div>
+              <h2 style="margin-top: 5px">
+                <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
+              </h2>
+              <hr>
+              {% include "misc/questions/top_question.html" %}
+            </div>
+            <p>{{ question.question_text|truncatewords:30|safe }}</p>
+          </div>
+          {% include 'misc/questions/bottom_question.html' %}
+        </div>
+      {% empty %}
+        <div class="alert alert-info text-center">
+          Здесь пока что нет ни одного вопроса
+        </div>
+      {% endfor %}
+
+      {% if is_paginated %}
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li><a href="?unanswered&page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% ifequal num page_obj.number %}
+              <li class="active"><a href="#">{{ num }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li><a href="?unanswered&page={{ num }}">{{ num }}</a></li>
+            {% endifequal %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li><a href="?unanswered&page={{ page_obj.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    </div>
+
+    {% block sidebar %}
+      {% sidebar_data_with_active_questions %}
+    {% endblock sidebar %}
+  </div>
+  </div>
+
+  <div class="question_dialog">
+    <div id="dialog_vote_forbit">
+      <p>Вы не можете голосовать за свой контент<span style="float: right" >&times;</span></p>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'questions_answers/for_java/question_list.html' %}
+{% endblock script %}

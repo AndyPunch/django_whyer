@@ -1,0 +1,9 @@
+*.pyc
+settings_local.py
+*.db
+.idea/
+cover/
+*.egg-info/
+*.egg/
+*~
+
