@@ -3,3 +3,6 @@ StackOverflow clone written in Python/Django.  The website located at [http://va
 
 ### How do I get set up? ###
 For full requirements, see requirments.txt
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/AndyPunch/django_whyer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
